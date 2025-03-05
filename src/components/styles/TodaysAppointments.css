@@ -1,0 +1,180 @@
+/* Base Styles for Today's Appointments */
+
+.todays-appointments-container {
+    max-width: 90%;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-radius: 16px;
+    font-family: 'Inter', sans-serif;
+    box-sizing: border-box;
+}
+
+
+/* Headings */
+
+.todays-appointments-heading {
+    color: #1a73e8;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+
+/* Loading and Error Message */
+
+.todays-appointments-loading,
+.todays-appointments-error {
+    text-align: center;
+    color: #ff6b6b;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+
+/* Table Container */
+
+.todays-appointments-table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.todays-appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.todays-appointments-table th,
+.todays-appointments-table td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.todays-appointments-table th {
+    background-color: #1a73e8;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+.todays-appointments-table tr:nth-child(odd) {
+    background-color: #f8f9fa;
+}
+
+.todays-appointments-table tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.todays-appointments-table tr:hover {
+    background-color: #e8f0fe;
+    transition: 0.3s;
+}
+
+
+/* Status Buttons */
+
+.status-button {
+    padding: 10px 20px;
+    margin: 4px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.visited {
+    background-color: #34a853;
+    color: white;
+}
+
+.visited:hover {
+    background-color: #2d8a4a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.not-visited {
+    background-color: #ea4335;
+    color: white;
+}
+
+.not-visited:hover {
+    background-color: #c5221f;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.status-text {
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 8px;
+    display: inline-block;
+    font-size: 0.9rem;
+}
+
+.status-text.availed {
+    background-color: #e6f4ea;
+    color: #34a853;
+}
+
+.status-text.not-availed {
+    background-color: #fce8e6;
+    color: #ea4335;
+}
+
+.status-text.confirmed {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+
+
+/* Toast Notifications */
+
+.Toastify__toast {
+    border-radius: 8px !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 0.9rem !important;
+}
+
+.Toastify__toast--success {
+    background-color: #34a853 !important;
+}
+
+.Toastify__toast--error {
+    background-color: #ea4335 !important;
+}
+
+
+/* Responsive Design */
+
+@media screen and (max-width: 768px) {
+    .todays-appointments-container {
+        padding: 20px;
+    }
+    .todays-appointments-heading {
+        font-size: 1.8rem;
+    }
+    .status-button {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+    }
+    .todays-appointments-table th,
+    .todays-appointments-table td {
+        padding: 12px;
+    }
+}
