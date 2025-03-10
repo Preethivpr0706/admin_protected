@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './styles/ViewUsers.css';
-
+import createAuthenticatedAxios from './createAuthenticatedAxios';
 
 const ViewUsers = () => {
     const location = useLocation();
@@ -26,16 +25,24 @@ const ViewUsers = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .post('/api/getUsers', { clientId })
-      .then((response) => {
+    const fetchUsers = async () => {
+      try {
+        const axiosInstance = createAuthenticatedAxios();
+        const response = await axiosInstance.post('/api/getUsers', { clientId });
         const data = response.data || [];
         setUsers(data);
         setFilteredUsers(data);
-      })
-      .catch((error) => console.error('Error fetching users:', error));
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+    
+    if (clientId) {
+      fetchUsers();
+    }
   }, [clientId]);
 
+  
   const handleSearch = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     setFilteredUsers(

@@ -5,7 +5,32 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/TodaysAppointments.css";
 
-
+// Utility function for authenticated API requests
+const authenticatedFetch = async (url, options = {}) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+    
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        'Authorization': token, // Token already includes Bearer prefix
+      },
+    });
+    
+    if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/'; // Force redirect to login
+        throw new Error('Unauthorized - Session expired');
+      }
+      throw new Error(`Request failed with status: ${response.status}`);
+    }
+    
+    return response;
+  };
 const TodaysAppointmentsAdmin = () => {
     const location = useLocation();
     const clientId = location.state.clientId;
@@ -29,7 +54,7 @@ const TodaysAppointmentsAdmin = () => {
     useEffect(() => {
         const fetchTodaysAppointments = async () => {
             try {
-                const response = await fetch("/api/admin/todays-appointments", {
+                const response = await authenticatedFetch("/api/admin/todays-appointments", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ clientId }),
@@ -64,7 +89,7 @@ const TodaysAppointmentsAdmin = () => {
         if (!confirmUpdate) return;
 
         try {
-            const response = await fetch("/api/admin/update-appointment-status", {
+            const response = await authenticatedFetch("/api/admin/update-appointment-status", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ appointmentId, status: newStatus }),
@@ -115,7 +140,7 @@ const TodaysAppointmentsAdmin = () => {
 
     const undoUpdateStatus = async (appointmentId, previousStatus, toastId) => {
         try {
-            const response = await fetch("/api/admin/update-appointment-status", {
+            const response = await authenticatedFetch("/api/admin/update-appointment-status", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ appointmentId, status: previousStatus }),

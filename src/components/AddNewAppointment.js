@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";  
 import axios from "axios";  
 import "./styles/AddAppointment.css";  
+import createAuthenticatedAxios from "./createAuthenticatedAxios";
   
 const AddNewAppointment = () => {  
   const [currentStep, setCurrentStep] = useState(1);  
@@ -37,10 +38,11 @@ const AddNewAppointment = () => {
       document.body.style.background = "";
     };
   }, []);
-
+ 
   
   useEffect(() => {  
-   axios  
+    const axiosInstance = createAuthenticatedAxios();
+   axiosInstance  
     .post("/api/departments", { clientId })  
     .then((response) => setDepartments(response.data))  
     .catch((error) => console.error("Error fetching departments:", error));  
@@ -100,7 +102,8 @@ const AddNewAppointment = () => {
     doctor: "",  
    });  
   
-   axios  
+   const axiosInstance = createAuthenticatedAxios();
+   axiosInstance   
     .post("/api/pocs", { departmentId, clientId })  
     .then((response) => setPocs(response.data))  
     .catch((error) => console.error("Error fetching POCs:", error));  
@@ -113,7 +116,8 @@ const AddNewAppointment = () => {
     doctor: pocId,  
    });  
   
-   axios  
+   const axiosInstance = createAuthenticatedAxios();
+   axiosInstance    
     .post("/api/pocs/available-dates", { pocId })  
     .then((response) => setAvailableDates(response.data))  
     .catch((error) => console.error("Error fetching available dates:", error));  
@@ -126,7 +130,8 @@ const AddNewAppointment = () => {
     date: selectedDate,  
    });  
   
-   axios  
+   const axiosInstance = createAuthenticatedAxios();
+   axiosInstance    
     .post("/api/pocs/available-times", {  
       pocId: appointmentData.doctor,  
       date: selectedDate,   
@@ -144,7 +149,8 @@ const AddNewAppointment = () => {
     }
   }
 
-  axios
+  const axiosInstance = createAuthenticatedAxios();
+   axiosInstance  
     .post("/api/users", {
       name: appointmentData.name,
       phone: phoneNumber,
@@ -154,8 +160,8 @@ const AddNewAppointment = () => {
     })  
     .then((response) => {  
       const userId = response.data.userId;  
-  
-      return axios.post("/api/create-appointments", {  
+      const axiosInstance = createAuthenticatedAxios();
+      return axiosInstance  .post("/api/create-appointments", {  
        userId: userId,  
        pocId: appointmentData.doctor,  
        date: appointmentData.date,  
@@ -175,9 +181,7 @@ const AddNewAppointment = () => {
    navigate("/admin-dashboard", { state: { clientId,clientName } });  
   };  
   
-  const handleBackButton = () => {  
-    navigate("/back-button", { state: { clientId, clientName } });  
-   }; 
+  
   const departmentName =  
    departments.find(  
     (d) => String(d.departmentId) === String(appointmentData.department)  

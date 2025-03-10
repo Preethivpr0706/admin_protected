@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import './styles/ViewAppointments.css';
+import createAuthenticatedAxios from './createAuthenticatedAxios';
 
 const ViewAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -25,7 +26,8 @@ const ViewAppointments = () => {
     };
   }, []);
   useEffect(() => {
-    axios
+    const axiosInstance = createAuthenticatedAxios();
+   axiosInstance 
       .post('/api/appointments', {  clientId: clientId, pocId:pocId })
       .then((response) => {
         const data = response.data || {};

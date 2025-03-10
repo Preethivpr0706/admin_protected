@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import createAuthenticatedAxios from "./createAuthenticatedAxios";
 
 const UpdateSchedule = () => {
 const [schedule, setSchedule] = useState([]);
@@ -24,8 +25,8 @@ const navigate = useNavigate();
 useEffect(() => {
 const pocId = location.state.pocId;
 setPocId(pocId);
-
-axios
+const axiosInstance = createAuthenticatedAxios();
+   axiosInstance 
 .get(`/api/poc/schedule/${pocId}`)
 .then((response) => {
 const scheduleData = response.data;
@@ -108,7 +109,8 @@ day: day.day,
 timeIntervals: day.timeIntervals,
 }));
 
-axios
+const axiosInstance = createAuthenticatedAxios();
+   axiosInstance 
 .post("/api/update-schedule", { schedule: scheduleData })
 .then((response) => {
 if (response.data.message === "Schedule updated successfully") {
@@ -116,7 +118,8 @@ toast.success("Schedule updated successfully");
 setDaysOfWeek((prevDays) =>
 prevDays.map((day) => ({ ...day, timeIntervals: [] }))
 );
-axios
+const axiosInstance = createAuthenticatedAxios();
+   axiosInstance 
 .get(`/api/poc/schedule/${pocId}`)
 .then((response) => {
 setSchedule(response.data); // Refresh schedule

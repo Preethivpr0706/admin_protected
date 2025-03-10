@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";  
 import { useNavigate, useLocation } from "react-router-dom";  
 import "./styles/AddPOC.css";  
+import createAuthenticatedAxios from "./createAuthenticatedAxios";
   
 export default function AddPOC() {  
   const [currentStep, setCurrentStep] = useState(1);  
@@ -22,8 +23,9 @@ export default function AddPOC() {
   const clientId = location.state?.clientId || null;  
   
   useEffect(() => {  
-   // Fetch departments dynamically  
-   axios  
+   // Fetch departments dynamically 
+   const axiosInstance = createAuthenticatedAxios();
+   axiosInstance    
     .post("/api/departments", { clientId })  
     .then((response) => setDepartments(response.data))  
     .catch((error) => console.error("Error fetching departments:", error));  
@@ -59,7 +61,8 @@ export default function AddPOC() {
     )?.Value_name || "N/A";  
   
     const consultationFees = parseFloat(doctorDetails.consultationFees);
-   axios  
+    const axiosInstance = createAuthenticatedAxios();
+    axiosInstance    
     .post("/api/add-poc", {  
       Client_ID: clientId,  
       Department_ID: doctorDetails.department,  

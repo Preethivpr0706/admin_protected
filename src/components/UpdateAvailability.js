@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom'; 
 import axios from 'axios';  
 import './styles/UpdateAvailability.css'; 
+import createAuthenticatedAxios from './createAuthenticatedAxios';
    
 const UpdateAvailability = () => {   
   const [departments, setDepartments] = useState([]);   
@@ -31,7 +32,8 @@ const UpdateAvailability = () => {
     
   useEffect(() => {   
   // Fetch departments   
-  axios  
+  const axiosInstance = createAuthenticatedAxios();
+   axiosInstance  
    .post("/api/departments", { clientId })  
    .then((response) => response.data)  
    .then(setDepartments)  
@@ -40,7 +42,8 @@ const UpdateAvailability = () => {
    
   useEffect(() => {   
   if (selectedDoctor) {   
-   axios  
+    const axiosInstance = createAuthenticatedAxios();
+    axiosInstance   
     .post("/api/pocs/available-dates-update", { pocId: selectedDoctor.POC_ID })  
     .then((response) => response.data)  
     .then((data) => {   
@@ -59,7 +62,8 @@ const UpdateAvailability = () => {
   setSelectedTimings([]);   
    
   // Fetch doctors for the selected department   
-  axios  
+  const axiosInstance = createAuthenticatedAxios();
+   axiosInstance 
    .post("/api/pocs", { departmentId, clientId })  
    .then((response) => response.data)  
    .then(setDoctors)  
@@ -86,7 +90,8 @@ const UpdateAvailability = () => {
    setSelectedDate(dateObj.Schedule_Date);   
     
    // Fetch available timings for the selected doctor and date   
-   axios  
+   const axiosInstance = createAuthenticatedAxios();
+   axiosInstance  
     .post("/api/pocs/available-times-update", { pocId: selectedDoctor.POC_ID, date: dateObj.Schedule_Date })  
     .then((response) => response.data)  
     .then(setTimings)  
@@ -110,7 +115,8 @@ const UpdateAvailability = () => {
     timings: availability === 'partial' ? selectedTimings : [],    
    };   
     
-   axios  
+   const axiosInstance = createAuthenticatedAxios();
+   axiosInstance   
     .post(endpoint, body)  
     .then((response) => {   
     if (response.status === 200) {   

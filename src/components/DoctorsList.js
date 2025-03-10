@@ -2,6 +2,33 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./styles/DoctorsList.css";
 
+// Utility function for authenticated API requests
+const authenticatedFetch = async (url, options = {}) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+  
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Authorization': token, // Token already includes Bearer prefix
+    },
+  });
+  
+  if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/'; // Force redirect to login
+      throw new Error('Unauthorized - Session expired');
+    }
+    throw new Error(`Request failed with status: ${response.status}`);
+  }
+  
+  return response;
+};
+
 const DoctorsList = () => {
   const location = useLocation();
   const clientId = location.state?.clientId || null;
@@ -25,7 +52,7 @@ const DoctorsList = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await fetch("/api/poc/get-doctors", {
+        const response = await authenticatedFetch("/api/poc/get-doctors", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ clientId }),

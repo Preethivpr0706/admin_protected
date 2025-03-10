@@ -9,6 +9,33 @@ const DepartmentList = () => {
   const [loading, setLoading] = useState(true);  
   const [error, setError] = useState(null);  
   const navigate = useNavigate();  
+
+  // Utility function for authenticated API requests
+const authenticatedFetch = async (url, options = {}) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
+  
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Authorization': token, // Token already includes Bearer prefix
+    },
+  });
+  
+  if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/'; // Force redirect to login
+      throw new Error('Unauthorized - Session expired');
+    }
+    throw new Error(`Request failed with status: ${response.status}`);
+  }
+  
+  return response;
+};
   
   useEffect(() => {  
    // Set the background color when the component is mounted  
@@ -23,7 +50,7 @@ const DepartmentList = () => {
   useEffect(() => {  
    const fetchDepartments = async () => {  
     try {  
-      const response = await fetch("/api/admin/departments", {  
+      const response = await authenticatedFetch("/api/admin/departments", {  
        method: "POST",  
        headers: { "Content-Type": "application/json" },  
        body: JSON.stringify({ clientId }),  

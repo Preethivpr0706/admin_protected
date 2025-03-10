@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";  
 import "./styles/ViewPOC.css";  
+import createAuthenticatedAxios from "./createAuthenticatedAxios";
   
 const ViewPOC = () => {  
   const [departments, setDepartments] = useState([]);  
@@ -23,7 +24,8 @@ const ViewPOC = () => {
   
   // Fetch departments on component mount  
   useEffect(() => {  
-   axios  
+    const axiosInstance = createAuthenticatedAxios();
+    axiosInstance   
     .post("/api/departments", { clientId })  
     .then((response) => {  
       console.log("Fetched departments:", response.data);  
@@ -35,7 +37,8 @@ const ViewPOC = () => {
   // Fetch POCs when the selected department changes  
   useEffect(() => {  
    if (selectedDepartment) {  
-    axios  
+    const axiosInstance = createAuthenticatedAxios();
+   axiosInstance   
       .post("/api/pocs", { departmentId: selectedDepartment, clientId })  
       .then((response) => {  
        console.log("Fetched POCs:", response.data);  

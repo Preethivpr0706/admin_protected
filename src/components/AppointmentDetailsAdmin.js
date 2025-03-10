@@ -2,7 +2,33 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";  
 import "./styles/AppointmentDetails.css";  
  
+// Utility function for authenticated API requests
+const authenticatedFetch = async (url, options = {}) => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No authentication token found');
+  }
   
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Authorization': token, // Token already includes Bearer prefix
+    },
+  });
+  
+  if (!response.ok) {
+    if (response.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/'; // Force redirect to login
+      throw new Error('Unauthorized - Session expired');
+    }
+    throw new Error(`Request failed with status: ${response.status}`);
+  }
+  
+  return response;
+};
+
 const AppointmentDetailsAdmin = () => {  
   const location = useLocation();  
   const clientId = location.state.clientId;  
@@ -25,7 +51,7 @@ const AppointmentDetailsAdmin = () => {
   useEffect(() => {  
    const fetchAppointments = async () => {  
     try {  
-      const response = await fetch("/api/admin/appointment-details", {  
+      const response = await authenticatedFetch("/api/admin/appointment-details", {  
        method: "POST",  
        headers: { "Content-Type": "application/json" },  
        body: JSON.stringify({ clientId, status }),  
